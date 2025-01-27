@@ -10,4 +10,21 @@
 
 </div>
 
+```
+CLI for printing license information of rust cargo projects to the terminal.
+
+Usage: flicense.exe [OPTIONS] [MANIFEST_DIR_PATH]
+
+Arguments:
+  [MANIFEST_DIR_PATH]  Optional path to manifest dir (where Cargo.toml and Cargo.lock are). Defaults to current dir
+
+Options:
+  -y, --yaml     Output as yaml
+  -j, --json     Output as json
+  -s, --short    Outputs only a short overview
+  -l, --license  Outputs license information regarding this software and it's dependencies
+  -h, --help     Print help
+  -V, --version  Print version
+```
+
 

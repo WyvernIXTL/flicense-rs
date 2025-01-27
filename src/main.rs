@@ -70,6 +70,10 @@ struct Cli {
     #[arg(short, long)]
     short: bool,
 
+    /// Omits outputing license text.
+    #[arg(short, long)]
+    omit_license_text: bool,
+
     /// Outputs license information regarding this software and it's dependencies.
     #[arg(short, long)]
     license: bool,
@@ -147,11 +151,17 @@ fn main() -> Result<()> {
     let cargo_toml: CargoToml = toml::from_str(&read_to_string(cargo_toml_path)?)?;
     let name = cargo_toml.package.name;
 
-    let package_list = generate_package_list_with_licenses_without_env_calls(
+    let mut package_list = generate_package_list_with_licenses_without_env_calls(
         None,
         manifest_dir.as_os_str().to_owned(),
         name,
     );
+
+    if cli.omit_license_text {
+        for pkg in package_list.iter_mut() {
+            pkg.license_text = None;
+        }
+    }
 
     if cli.yaml {
         println!("{}", serde_yml::to_string(&package_list)?)
