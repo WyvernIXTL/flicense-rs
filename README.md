@@ -5,7 +5,6 @@
 
 [![Crates.io Version](https://img.shields.io/crates/v/flicense)](https://crates.io/crates/flicense)
 [![GitHub License](https://img.shields.io/github/license/WyvernIXTL/flicense-rs)](https://github.com/WyvernIXTL/flicense-rs/blob/main/LICENSE)
-[![docs.rs](https://img.shields.io/docsrs/flicense)](https://docs.rs/flicense)
 [![dependency status](https://deps.rs/repo/github/WyvernIXTL/flicense-rs/status.svg)](https://deps.rs/repo/github/WyvernIXTL/flicense-rs)
 
 </div>
