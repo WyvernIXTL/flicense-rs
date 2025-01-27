@@ -4,7 +4,7 @@ description = "CLI for printing license information of rust cargo projects to th
 authors = ["Adam McKellar <dev@mckellar.eu>"]
 version = "0.1.0"
 edition = "2021"
-repository = "https://github.com/WyvernIXTL/license-fetcher"
+repository = "https://github.com/WyvernIXTL/flicense-rs"
 license = "BSL-1.0"
 keywords = ["license", "fetch", "about", "find"]
 
