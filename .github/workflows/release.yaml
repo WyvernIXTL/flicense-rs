@@ -1,0 +1,77 @@
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  compile-and-upload:
+    continue-on-error: true
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: aarch64-apple-darwin
+            os: macos-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: i686-pc-windows-msvc
+            os: windows-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+          - target: aarch64-pc-windows-msvc
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Target
+        run: rustup target add ${{ matrix.target }}
+      - name: Compile
+        run: cargo build --release --target ${{ matrix.target }}
+      - name: Zip Binary (windows)
+        if: runner.os == 'Windows'
+        run: 7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.7z ./target/${{ matrix.target }}/release/flicense.exe ./README.md
+      - name: Tar Binary (linux/mac)
+        if: runner.os != 'Windows'
+        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.tar.xz ./target/${{ matrix.target }}/release/flicense ./README.md
+      - name: Upload Binary
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            flicense*
+
+  compile-and-upload-cross:
+    continue-on-error: true
+    strategy:
+      matrix:
+        include:
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: i686-unknown-linux-gnu
+            os: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+      - name: Compile
+        run: cross build --release --target ${{ matrix.target }}
+      - name: Zip Binary (windows)
+        if: runner.os == 'Windows'
+        run: 7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.7z ./target/${{ matrix.target }}/release/flicense.exe ./README.md
+      - name: Tar Binary (linux/mac)
+        if: runner.os != 'Windows'
+        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.tar.xz ./target/${{ matrix.target }}/release/flicense ./README.md
+      - name: Upload Binary
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            flicense*
+
+      
