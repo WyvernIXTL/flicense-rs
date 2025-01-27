@@ -9,6 +9,8 @@ use std::fs::{read_dir, read_to_string};
 use std::io::prelude::*;
 use std::io::{stdout, BufWriter};
 use std::path::{absolute, PathBuf};
+use std::process::exit;
+use std::string::ToString;
 
 use clap::Parser;
 use color_eyre::eyre::Result;
@@ -19,6 +21,23 @@ use serde_json::to_string_pretty;
 use license_fetcher::build_script::generate_package_list_with_licenses_without_env_calls;
 use license_fetcher::get_package_list_macro;
 use license_fetcher::PackageList;
+
+fn err<T>(msg: T)
+where
+    T: ToString,
+{
+    eprintln!("{}", msg.to_string().red());
+    exit(1);
+}
+
+macro_rules! err {
+    ($($arg:tt)*) => {
+        {
+            err(format!($($arg)*));
+            unreachable!();
+        }
+    };
+}
 
 #[derive(Deserialize)]
 struct CargoToml {
@@ -97,14 +116,14 @@ fn main() -> Result<()> {
     let manifest_dir = match cli.manifest_dir_path {
         Some(path) => {
             if !path.try_exists()? {
-                panic!("{}", "Error: Path does not exist!".red());
+                err!("Error: Path does not exist! Path: {:#?}", path);
             }
             let absolute_path = absolute(path)?;
             if !absolute_path.is_dir() {
                 absolute_path
                     .parent()
                     .unwrap_or_else(|| {
-                        panic!("{}", "Error: Cannot find parent of path.".red());
+                        err!("Error: Cannot find parent of path.");
                     })
                     .to_owned()
             } else {
@@ -122,10 +141,7 @@ fn main() -> Result<()> {
         .filter(|entry| entry.file_type().map_or(false, |ft| ft.is_file()))
         .filter(|entry| entry.file_name().to_string_lossy() == "Cargo.toml")
         .next()
-        .expect(&format!(
-            "{}",
-            "Error: Failed finding Cargo.toml file in dir.".red()
-        ))
+        .unwrap_or_else(|| err!("Error: Failed finding Cargo.toml file in dir."))
         .path();
 
     let cargo_toml: CargoToml = toml::from_str(&read_to_string(cargo_toml_path)?)?;

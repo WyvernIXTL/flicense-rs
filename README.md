@@ -10,4 +10,4 @@
 
 </div>
 
-`flicense` is a simple program that lets you quickly see what licenses a cargo project has.
+
