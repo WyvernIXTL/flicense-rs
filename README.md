@@ -29,6 +29,11 @@ Options:
 
 ## Installation
 
+### Prerequisite
+
+1. Have [Cargo](https://github.com/rust-lang/cargo) installed.
+2. Ensure the dependencies of the project for which you want to fetch licenses are downloaded (e.g., using `cargo fetch`).
+
 ### From Source
 
 ```
