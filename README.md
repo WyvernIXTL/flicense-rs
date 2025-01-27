@@ -28,6 +28,22 @@ Options:
   -V, --version            Print version
 ```
 
+## Installation
+
+### From Source
+
+```
+cargo install flicense
+```
+
+### [Scoop](https://scoop.sh/) (Windows)
+
+```
+scoop bucket add stupid-bucket https://github.com/WyvernIXTL/stupid-bucket
+scoop install stupid-bucket/flicense
+```
+
+
 ## Examples:
 
 ### Without Any Flag
