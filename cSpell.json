@@ -1,8 +1,14 @@
 {
     "words": [
         "binstall",
+        "cargoargs",
         "flicense",
         "Kellar",
-        "serde"
+        "mimalloc",
+        "rustflags",
+        "rustup",
+        "serde",
+        "softprops",
+        "Swatinem"
     ]
 }

@@ -28,5 +28,5 @@ mimalloc = ["dep:mimalloc"]
 [package.metadata.binstall]
 pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }{ archive-suffix }"
 bin-dir = "{ name }-{ target }-v{ version }/{ bin }{ binary-ext }"
-pkg-fmt = "txz"
+pkg-fmt = "tgz"
 
