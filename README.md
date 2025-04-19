@@ -3,8 +3,8 @@
 # `flicense`
 **CLI for printing license information of rust cargo projects to the terminal.**
 
-[![Crates.io Version](https://img.shields.io/crates/v/flicense)](https://crates.io/crates/flicense)
-[![GitHub License](https://img.shields.io/github/license/WyvernIXTL/flicense-rs)](https://github.com/WyvernIXTL/flicense-rs/blob/main/LICENSE)
+[![Crates.io Version](https://badgen.net/crates/v/flicense)](https://crates.io/crates/flicense)
+[![GitHub License](https://badgen.net/github/license/WyvernIXTL/flicense-rs)](https://github.com/WyvernIXTL/flicense-rs/blob/main/LICENSE)
 [![dependency status](https://deps.rs/repo/github/WyvernIXTL/flicense-rs/status.svg)](https://deps.rs/repo/github/WyvernIXTL/flicense-rs)
 
 </div>
