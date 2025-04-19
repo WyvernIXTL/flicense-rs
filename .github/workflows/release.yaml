@@ -13,10 +13,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
-            rustflags: "-C target-cpu=x86-64-v3"
-            cargoargs: "-F mimalloc"
           - target: aarch64-apple-darwin
             os: macos-latest
             rustflags: ""
@@ -36,7 +32,7 @@ jobs:
           - target: aarch64-pc-windows-msvc
             os: windows-latest
             rustflags: ""
-            cargoargs: ""
+            cargoargs: "-F mimalloc"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -61,18 +57,24 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            flicense*
+            flicense*.txz
+            flicense*.zip
+            flicense*.7z
 
   compile-and-upload-cross:
     continue-on-error: true
     strategy:
       matrix:
         include:
-          - target: aarch64-unknown-linux-gnu
+          - target: aarch64-unknown-linux-musl
             os: ubuntu-latest
             rustflags: ""
             cargoargs: "-F mimalloc"
-          - target: i686-unknown-linux-gnu
+          - target: i686-unknown-linux-musl
+            os: ubuntu-latest
+            rustflags: "-C target-cpu=x86-64-v3"
+            cargoargs: "-F mimalloc"
+          - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
             rustflags: "-C target-cpu=x86-64-v3"
             cargoargs: "-F mimalloc"
@@ -94,5 +96,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            flicense*
+            flicense*.txz
 

@@ -5,6 +5,7 @@
         "flicense",
         "Kellar",
         "mimalloc",
+        "msvc",
         "rustflags",
         "rustup",
         "serde",
