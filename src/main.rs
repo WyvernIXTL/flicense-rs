@@ -74,7 +74,7 @@ struct Cli {
     #[arg(short, long)]
     short: bool,
 
-    /// Omits outputing license text.
+    /// Omits outputting license text.
     #[arg(short, long)]
     omit_license_text: bool,
 
@@ -145,7 +145,7 @@ fn main() -> Result<()> {
 
     let cargo_toml_path = read_dir(manifest_dir.clone())?
         .into_iter()
-        .filter_map(|enry| enry.ok())
+        .filter_map(|entry| entry.ok())
         .filter(|entry| entry.file_type().map_or(false, |ft| ft.is_file()))
         .filter(|entry| entry.file_name().to_string_lossy() == "Cargo.toml")
         .next()

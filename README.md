@@ -21,7 +21,7 @@ Options:
   -y, --yaml               Output as yaml
   -j, --json               Output as json
   -s, --short              Outputs only a short overview
-  -o, --omit-license-text  Omits outputing license text
+  -o, --omit-license-text  Omits outputting license text
   -l, --license            Outputs license information regarding this software and it's dependencies
   -h, --help               Print help
   -V, --version            Print version
@@ -48,21 +48,6 @@ scoop install stupid-bucket/flicense
 
 ```sh
 cargo install flicense
-```
-
-#### Optimized Builds
-
-**On Unix (Linux/MacOS) with x86 CPUs:**
-
-```sh
-RUSTFLAGS="-C target-cpu=x86-64-v3" cargo install flicense -F mimalloc
-```
-
-**On Windows with x86 CPUs:**
-
-```powershell
-$env:RUSTFLAGS="-C target-cpu=x86-64-v3"
-cargo install flicense -F mimalloc
 ```
 
 

@@ -44,7 +44,7 @@ jobs:
       - name: Compile
         env:
           RUSTFLAGS: ${{ matrix.rustflags }}
-        run: cargo build --release --target ${{ matrix.target }} ${{ matrix.cargoargs }}
+        run: cargo build --profile optimized-release --target ${{ matrix.target }} ${{ matrix.cargoargs }}
       - name: Zip Binary (windows)
         if: runner.os == 'Windows'
         run: | 
@@ -89,7 +89,7 @@ jobs:
       - name: Compile
         env:
           RUSTFLAGS: ${{ matrix.rustflags }}
-        run: cross build --release --target ${{ matrix.target }} ${{ matrix.cargoargs }}
+        run: cross build --profile optimized-release --target ${{ matrix.target }} ${{ matrix.cargoargs }}
       - name: Tar Binary
         run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/release/flicense ./README.md
       - name: Upload Binary

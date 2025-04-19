@@ -2,9 +2,11 @@
     "words": [
         "binstall",
         "cargoargs",
+        "codegen",
         "flicense",
         "Kellar",
         "mimalloc",
+        "miniz",
         "msvc",
         "rustflags",
         "rustup",
