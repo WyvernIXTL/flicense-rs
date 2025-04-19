@@ -29,25 +29,25 @@ Options:
 
 ## Installation
 
+### From Source
+
+```sh
+cargo install flicense
+```
+
+
 ### [Cargo Binstall](https://github.com/cargo-bins/cargo-binstall)
 
 ```sh
-cargo binstall flicense
+cargo binstall -y flicense
 ```
 
 
 ### [Scoop](https://scoop.sh/) (Windows)
 
-```
+```sh
 scoop bucket add stupid-bucket https://github.com/WyvernIXTL/stupid-bucket
 scoop install stupid-bucket/flicense
-```
-
-
-### From Source
-
-```sh
-cargo install flicense
 ```
 
 

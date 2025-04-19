@@ -13,6 +13,10 @@ inherits = "release"
 lto = "fat"
 codegen-units = 1
 
+[profile.release]
+opt-level = 0 # It is not that much slower (~20ms). But you get 8s compile time shaved of!
+debug = 0
+
 [dependencies]
 clap = { version = "4.5.27", features = ["derive"] }
 color-eyre = "0.6.3"
