@@ -2,7 +2,7 @@
 name = "flicense"
 description = "CLI for printing license information of rust cargo projects to the terminal."
 authors = ["Adam McKellar <dev@mckellar.eu>"]
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 repository = "https://github.com/WyvernIXTL/flicense-rs"
 license = "BSL-1.0"
