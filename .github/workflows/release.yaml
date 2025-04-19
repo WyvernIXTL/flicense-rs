@@ -48,11 +48,11 @@ jobs:
       - name: Zip Binary (windows)
         if: runner.os == 'Windows'
         run: | 
-          7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.7z ./target/${{ matrix.target }}/release/flicense.exe ./README.md
-          7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.zip ./target/${{ matrix.target }}/release/flicense.exe ./README.md
+          7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.7z ./target/${{ matrix.target }}/optimized-release/flicense.exe ./README.md
+          7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.zip ./target/${{ matrix.target }}/optimized-release/flicense.exe ./README.md
       - name: Tar Binary (linux/mac)
         if: runner.os != 'Windows'
-        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/release/flicense ./README.md
+        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/optimized-release/flicense ./README.md
       - name: Upload Binary
         uses: softprops/action-gh-release@v2
         with:
@@ -91,7 +91,7 @@ jobs:
           RUSTFLAGS: ${{ matrix.rustflags }}
         run: cross build --profile optimized-release --target ${{ matrix.target }} ${{ matrix.cargoargs }}
       - name: Tar Binary
-        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/release/flicense ./README.md
+        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/optimized-release/flicense ./README.md
       - name: Upload Binary
         uses: softprops/action-gh-release@v2
         with:
