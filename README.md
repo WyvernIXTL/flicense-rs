@@ -29,16 +29,12 @@ Options:
 
 ## Installation
 
-### Prerequisite
+### [Cargo Binstall](https://github.com/cargo-bins/cargo-binstall)
 
-1. Have [Cargo](https://github.com/rust-lang/cargo) installed.
-2. Ensure the dependencies of the project for which you want to fetch licenses are downloaded (e.g., using `cargo fetch`).
-
-### From Source
-
+```sh
+cargo binstall flicense
 ```
-cargo install flicense
-```
+
 
 ### [Scoop](https://scoop.sh/) (Windows)
 
@@ -46,6 +42,36 @@ cargo install flicense
 scoop bucket add stupid-bucket https://github.com/WyvernIXTL/stupid-bucket
 scoop install stupid-bucket/flicense
 ```
+
+
+### From Source
+
+```sh
+cargo install flicense
+```
+
+#### Optimized Builds
+
+**On Unix (Linux/MacOS) with x86 CPUs:**
+
+```sh
+RUSTFLAGS="-C target-cpu=x86-64-v3" cargo install flicense -F mimalloc
+```
+
+**On Windows with x86 CPUs:**
+
+```powershell
+$env:RUSTFLAGS="-C target-cpu=x86-64-v3"
+cargo install flicense -F mimalloc
+```
+
+
+## Usage
+
+### Prerequisite
+
+1. Have [Cargo](https://github.com/rust-lang/cargo) installed.
+2. Ensure the dependencies of the project for which you want to fetch licenses are downloaded (e.g., using `cargo fetch`).
 
 
 ## Examples:

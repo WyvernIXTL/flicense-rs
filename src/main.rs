@@ -22,6 +22,10 @@ use license_fetcher::build_script::generate_package_list_with_licenses_without_e
 use license_fetcher::get_package_list_macro;
 use license_fetcher::PackageList;
 
+#[cfg(feature = "mimalloc")]
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 fn err<T>(msg: T)
 where
     T: ToString,

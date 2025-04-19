@@ -15,30 +15,48 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
+            rustflags: "-C target-cpu=x86-64-v3"
+            cargoargs: "-F mimalloc"
           - target: aarch64-apple-darwin
             os: macos-latest
+            rustflags: ""
+            cargoargs: "-F mimalloc"
           - target: x86_64-apple-darwin
             os: macos-latest
+            rustflags: "-C target-cpu=x86-64-v3"
+            cargoargs: "-F mimalloc"
           - target: i686-pc-windows-msvc
             os: windows-latest
+            rustflags: "-C target-cpu=x86-64-v3"
+            cargoargs: "-F mimalloc"
           - target: x86_64-pc-windows-msvc
             os: windows-latest
+            rustflags: "-C target-cpu=x86-64-v3"
+            cargoargs: "-F mimalloc"
           - target: aarch64-pc-windows-msvc
             os: windows-latest
+            rustflags: ""
+            cargoargs: ""
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Target
         run: rustup target add ${{ matrix.target }}
+      - name: Build Cache
+        uses: Swatinem/rust-cache@v2
       - name: Compile
-        run: cargo build --release --target ${{ matrix.target }}
+        env:
+          RUSTFLAGS: ${{ matrix.rustflags }}
+        run: cargo build --release --target ${{ matrix.target }} ${{ matrix.cargoargs }}
       - name: Zip Binary (windows)
         if: runner.os == 'Windows'
-        run: 7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.7z ./target/${{ matrix.target }}/release/flicense.exe ./README.md
+        run: | 
+          7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.7z ./target/${{ matrix.target }}/release/flicense.exe ./README.md ./CHANGELOG.md
+          7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/release/flicense.exe ./README.md ./CHANGELOG.md
       - name: Tar Binary (linux/mac)
         if: runner.os != 'Windows'
-        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.tar.xz ./target/${{ matrix.target }}/release/flicense ./README.md
+        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/release/flicense ./README.md ./CHANGELOG.md
       - name: Upload Binary
         uses: softprops/action-gh-release@v2
         with:
@@ -52,26 +70,29 @@ jobs:
         include:
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
+            rustflags: ""
+            cargoargs: "-F mimalloc"
           - target: i686-unknown-linux-gnu
             os: ubuntu-latest
+            rustflags: "-C target-cpu=x86-64-v3"
+            cargoargs: "-F mimalloc"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install Cargo Binstall
+        uses: cargo-bins/cargo-binstall@main
       - name: Install Cross
-        run: cargo install cross --git https://github.com/cross-rs/cross
+        run: cargo binstall -y cross
       - name: Compile
-        run: cross build --release --target ${{ matrix.target }}
-      - name: Zip Binary (windows)
-        if: runner.os == 'Windows'
-        run: 7z a flicense-${{ github.ref_name }}-${{ matrix.target }}.7z ./target/${{ matrix.target }}/release/flicense.exe ./README.md
-      - name: Tar Binary (linux/mac)
-        if: runner.os != 'Windows'
-        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.tar.xz ./target/${{ matrix.target }}/release/flicense ./README.md
+        env:
+          RUSTFLAGS: ${{ matrix.rustflags }}
+        run: cross build --release --target ${{ matrix.target }} ${{ matrix.cargoargs }}
+      - name: Tar Binary
+        run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/release/flicense ./README.md ./CHANGELOG.md
       - name: Upload Binary
         uses: softprops/action-gh-release@v2
         with:
           files: |
             flicense*
 
-      

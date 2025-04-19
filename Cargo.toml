@@ -13,6 +13,7 @@ clap = { version = "4.5.27", features = ["derive"] }
 color-eyre = "0.6.3"
 colored = "3.0.0"
 license-fetcher = { version = "0.6.3", features = ["build"] }
+mimalloc = { version = "0.1.46", features = ["secure"], optional = true }
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = "1.0.137"
 serde_yml = "0.0.12"
@@ -20,4 +21,12 @@ toml = "0.8.19"
 
 [build-dependencies]
 license-fetcher = { version = "0.6.3", features = ["build"] }
+
+[features]
+mimalloc = ["dep:mimalloc"]
+
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }{ archive-suffix }"
+bin-dir = "{ name }-{ target }-v{ version }/{ bin }{ binary-ext }"
+pkg-fmt = "txz"
 
