@@ -8,15 +8,20 @@ repository = "https://github.com/WyvernIXTL/flicense-rs"
 license = "BSL-1.0"
 keywords = ["license", "fetch", "about", "find"]
 
+[profile.release]
+opt-level = 0 # It is not that much slower (~20ms). But you get 8s compile time shaved of!
+debug = 0
+
 [profile.optimized-release]
 inherits = "release"
 opt-level = 3
 lto = "fat"
 codegen-units = 1
 
-[profile.release]
-opt-level = 0 # It is not that much slower (~20ms). But you get 8s compile time shaved of!
-debug = 0
+[profile.debug-release]
+inherits = "release"
+opt-level = 3
+debug = true
 
 [dependencies]
 clap = { version = "4.5.27", features = ["derive"] }
