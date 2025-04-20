@@ -175,7 +175,11 @@ fn main() -> Result<()> {
         if cli.short {
             print_short_license_info(package_list)?;
         } else {
-            println!("{}", package_list);
+            let stdout = std::io::stdout();
+            let lock = stdout.lock();
+            let mut stdout_buffered = BufWriter::new(lock);
+            write!(stdout_buffered, "{}", package_list)?;
+            stdout_buffered.flush()?;
         }
     }
 
