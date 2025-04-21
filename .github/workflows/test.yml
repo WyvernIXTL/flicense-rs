@@ -15,4 +15,6 @@ jobs:
       - name: Build Cache
         uses: Swatinem/rust-cache@v2
       - name: Build Debug
-        run: cargo run -- .
+        run: cargo b
+      - name: Run CLI 
+        run: ./target/debug/flicense -s .
