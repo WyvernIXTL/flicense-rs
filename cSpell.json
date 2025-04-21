@@ -3,6 +3,7 @@
         "binstall",
         "cargoargs",
         "codegen",
+        "devcontainers",
         "flicense",
         "Kellar",
         "mimalloc",
