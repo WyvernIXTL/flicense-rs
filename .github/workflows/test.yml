@@ -1,0 +1,16 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test Execution (Ubuntu)
+    steps:
+      - name: Build Cache
+        uses: Swatinem/rust-cache@v2
+      - name: Build Debug
+        run: cargo run -- .
