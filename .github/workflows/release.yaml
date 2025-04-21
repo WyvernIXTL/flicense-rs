@@ -24,15 +24,15 @@ jobs:
           - target: i686-pc-windows-msvc
             os: windows-latest
             rustflags: "-C target-cpu=x86-64-v3"
-            cargoargs: "-F mimalloc"
+            cargoargs: ""
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             rustflags: "-C target-cpu=x86-64-v3"
-            cargoargs: "-F mimalloc"
+            cargoargs: ""
           - target: aarch64-pc-windows-msvc
             os: windows-latest
             rustflags: ""
-            cargoargs: "-F mimalloc"
+            cargoargs: ""
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout

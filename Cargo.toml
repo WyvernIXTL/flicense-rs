@@ -35,8 +35,9 @@ toml = "0.8.19"
 license-fetcher = { version = "0.7.0", features = ["build"] }
 
 [features]
-# Another allocator.
-# On Windows it performs worse than the standard allocator.
+# Other memory allocators for testing.
+# On Windows and Linux GNU they perform worse than the standard allocators.
+# I was not able to test Linux MUSL or Apple performance.
 mimalloc = ["dep:mimalloc"]
 tikv-jemallocator = ["dep:tikv-jemallocator"]
 
