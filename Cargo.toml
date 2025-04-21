@@ -28,6 +28,7 @@ mimalloc = { version = "0.1.46", features = ["secure"], optional = true }
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = "1.0.137"
 serde_yml = "0.0.12"
+tikv-jemallocator = { version = "0.6.0", optional = true }
 toml = "0.8.19"
 
 [build-dependencies]
@@ -37,6 +38,7 @@ license-fetcher = { version = "0.7.0", features = ["build"] }
 # Another allocator.
 # On Windows it performs worse than the standard allocator.
 mimalloc = ["dep:mimalloc"]
+tikv-jemallocator = ["dep:tikv-jemallocator"]
 
 [package.metadata.binstall]
 pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }{ archive-suffix }"

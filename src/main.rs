@@ -22,9 +22,16 @@ use license_fetcher::build_script::generate_package_list_with_licenses_without_e
 use license_fetcher::get_package_list_macro;
 use license_fetcher::PackageList;
 
+#[cfg(all(feature = "mimalloc", feature = "tikv-jemallocator"))]
+compile_error!("Features `mimalloc` and `tikv-jemallocator` are mutually exclusive and cannot be enabled at the same time.");
+
 #[cfg(feature = "mimalloc")]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
+#[cfg(all(feature = "tikv-jemallocator", not(target_env = "msvc")))]
+#[global_allocator]
+static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 
 fn err<T>(msg: T)
 where

@@ -5,6 +5,8 @@
         "codegen",
         "devcontainers",
         "flicense",
+        "Jemalloc",
+        "jemallocator",
         "Kellar",
         "mimalloc",
         "miniz",
@@ -13,6 +15,7 @@
         "rustup",
         "serde",
         "softprops",
-        "Swatinem"
+        "Swatinem",
+        "tikv"
     ]
 }
