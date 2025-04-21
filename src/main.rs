@@ -104,7 +104,9 @@ fn print_short_license_info(package_list: PackageList) -> Result<()> {
             }
         }
     }
-    let mut stdout_buffered = BufWriter::new(stdout());
+    let stdout = std::io::stdout();
+    let lock = stdout.lock();
+    let mut stdout_buffered = BufWriter::new(lock);
     for (license, packages) in license_map {
         write!(stdout_buffered, "{}: ", license.green())?;
         for pck in packages.iter().take(packages.len() - 1) {
