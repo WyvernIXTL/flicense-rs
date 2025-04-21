@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::env::current_dir;
 use std::fs::{read_dir, read_to_string};
 use std::io::prelude::*;
-use std::io::{stdout, BufWriter};
+use std::io::BufWriter;
 use std::path::{absolute, PathBuf};
 use std::process::exit;
 use std::string::ToString;
