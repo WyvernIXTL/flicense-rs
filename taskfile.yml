@@ -1,0 +1,8 @@
+version: "3"
+
+tasks:
+  flame:
+    desc: generate flame graphs
+    cmds:
+      - sudo cargo flamegraph --profile debug-release -- .
+      - sudo cargo flamegraph --profile debug-release --flamechart -o flamechart.svg -- .
