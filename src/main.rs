@@ -10,6 +10,7 @@ use std::path::PathBuf;
 use std::process::exit;
 
 use clap::Parser;
+use colored::ColoredString;
 use colored::Colorize;
 use license_fetcher::error::UnpackError;
 use serde_json::to_string_pretty;
@@ -68,6 +69,45 @@ fn print_short_license_info(package_list: PackageList) {
     stdout_buffered.flush().unwrap();
 }
 
+fn check(val: bool) -> ColoredString {
+    if val {
+        "✓".green()
+    } else {
+        "✗".red()
+    }
+}
+
+fn print_license_stats(package_list: PackageList) {
+    let stdout = std::io::stdout();
+    let lock = stdout.lock();
+    let mut stdout_buffered = BufWriter::new(lock);
+    writeln!(stdout_buffered, "{:<30}{:<30}", "name", "license found").unwrap();
+    let total_count = package_list.len();
+    let mut count = 0;
+    for p in package_list.0.into_iter() {
+        writeln!(
+            stdout_buffered,
+            "{:<30}{:<30}",
+            p.name.blue(),
+            check(p.license_text.is_some())
+        )
+        .unwrap();
+        if p.license_text.is_some() {
+            count += 1;
+        }
+    }
+    let percentage = (count as f64 / total_count as f64) * 100.0;
+    let percentage_str = if percentage > 98.0 {
+        format!("{:.0}%", percentage).green()
+    } else if percentage < 90.0 {
+        format!("{:.0}%", percentage).red()
+    } else {
+        format!("{:.0}%", percentage).yellow()
+    };
+    writeln!(stdout_buffered, "\nlicense found: {}", percentage_str).unwrap();
+    stdout_buffered.flush().unwrap();
+}
+
 /// CLI for printing license information of rust cargo projects to the terminal.
 ///
 /// Cargo needs to be installed and be in the PATH.
@@ -88,6 +128,10 @@ struct Cli {
     /// Outputs only a short overview.
     #[arg(short, long)]
     short: bool,
+
+    /// Outputs stats regarding how many licenses have been found and for what crates.
+    #[arg(long)]
+    stats: bool,
 
     /// Omits outputting license text.
     #[arg(short, long)]
@@ -134,6 +178,8 @@ fn main() {
     } else {
         if cli.short {
             print_short_license_info(package_list);
+        } else if cli.stats {
+            print_license_stats(package_list);
         } else {
             let stdout = std::io::stdout();
             let lock = stdout.lock();
