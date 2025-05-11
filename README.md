@@ -59,6 +59,9 @@ cargo install flicense
 
 ## Examples:
 
+> [!NOTE]
+> The examples where created at different times.
+
 ### Without Any Flag
 
 ```
