@@ -4,40 +4,31 @@
 //          https://www.boost.org/LICENSE_1_0.txt)
 
 use std::collections::HashMap;
-use std::env::current_dir;
-use std::fs::{read_dir, read_to_string};
 use std::io::prelude::*;
 use std::io::BufWriter;
-use std::path::{absolute, PathBuf};
+use std::path::PathBuf;
 use std::process::exit;
-use std::string::ToString;
 
 use clap::Parser;
-use color_eyre::eyre::Result;
 use colored::Colorize;
-use serde::Deserialize;
+use license_fetcher::error::UnpackError;
 use serde_json::to_string_pretty;
 
-use license_fetcher::build_script::generate_package_list_with_licenses_without_env_calls;
-use license_fetcher::get_package_list_macro;
+use license_fetcher::build::{
+    config::ConfigBuilder, metadata::package_list, package_list_with_licenses,
+};
+use license_fetcher::read_package_list_from_out_dir;
 use license_fetcher::PackageList;
-
-#[cfg(all(feature = "mimalloc", feature = "tikv-jemallocator"))]
-compile_error!("Features `mimalloc` and `tikv-jemallocator` are mutually exclusive and cannot be enabled at the same time.");
 
 #[cfg(feature = "mimalloc")]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
-#[cfg(all(feature = "tikv-jemallocator", not(target_env = "msvc")))]
-#[global_allocator]
-static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
-
 fn err<T>(msg: T)
 where
-    T: ToString,
+    T: AsRef<str>,
 {
-    eprintln!("{}", msg.to_string().red());
+    eprintln!("{}", msg.as_ref().red());
     exit(1);
 }
 
@@ -50,14 +41,31 @@ macro_rules! err {
     };
 }
 
-#[derive(Deserialize)]
-struct CargoToml {
-    package: CargoPackage,
-}
-
-#[derive(Deserialize)]
-struct CargoPackage {
-    name: String,
+fn print_short_license_info(package_list: PackageList) {
+    let mut license_map: HashMap<String, Vec<String>> = HashMap::new();
+    for pck in package_list.iter() {
+        if let Some(license) = pck.license_identifier.clone() {
+            if !license_map.contains_key(&license) {
+                license_map.insert(license, vec![pck.name.clone()]);
+            } else {
+                license_map
+                    .get_mut(&license)
+                    .unwrap()
+                    .push(pck.name.clone());
+            }
+        }
+    }
+    let stdout = std::io::stdout();
+    let lock = stdout.lock();
+    let mut stdout_buffered = BufWriter::new(lock);
+    for (license, packages) in license_map {
+        write!(stdout_buffered, "{}: ", license.green()).unwrap();
+        for pck in packages.iter().take(packages.len() - 1) {
+            write!(stdout_buffered, "{}, ", pck).unwrap();
+        }
+        write!(stdout_buffered, "{}\n", packages.last().unwrap()).unwrap();
+    }
+    stdout_buffered.flush().unwrap();
 }
 
 /// CLI for printing license information of rust cargo projects to the terminal.
@@ -90,107 +98,48 @@ struct Cli {
     license: bool,
 }
 
-fn print_short_license_info(package_list: PackageList) -> Result<()> {
-    let mut license_map: HashMap<String, Vec<String>> = HashMap::new();
-    for pck in package_list.iter() {
-        if let Some(license) = pck.license_identifier.clone() {
-            if !license_map.contains_key(&license) {
-                license_map.insert(license, vec![pck.name.clone()]);
-            } else {
-                license_map
-                    .get_mut(&license)
-                    .unwrap()
-                    .push(pck.name.clone());
-            }
-        }
-    }
-    let stdout = std::io::stdout();
-    let lock = stdout.lock();
-    let mut stdout_buffered = BufWriter::new(lock);
-    for (license, packages) in license_map {
-        write!(stdout_buffered, "{}: ", license.green())?;
-        for pck in packages.iter().take(packages.len() - 1) {
-            write!(stdout_buffered, "{}, ", pck)?;
-        }
-        write!(stdout_buffered, "{}\n", packages.last().unwrap())?;
-    }
-    stdout_buffered.flush()?;
-
-    Ok(())
-}
-
-fn main() -> Result<()> {
-    color_eyre::install()?;
-
+fn main() {
     let cli = Cli::parse();
 
     if cli.license {
-        let packages = get_package_list_macro!()?;
+        let packages = match read_package_list_from_out_dir!() {
+            Ok(e) => e,
+            Err(e) => match e {
+                UnpackError::Empty => err!("Failed to embed licenses. No licenses found."),
+                _ => {
+                    eprintln!("{:?}", e);
+                    exit(1);
+                }
+            },
+        };
         println!("{}", packages);
-        return Ok(());
+        return;
     }
 
-    let manifest_dir = match cli.manifest_dir_path {
-        Some(path) => {
-            if !path.try_exists()? {
-                err!("Error: Path does not exist! Path: {:#?}", path);
-            }
-            let absolute_path = absolute(path)?;
-            if !absolute_path.is_dir() {
-                absolute_path
-                    .parent()
-                    .unwrap_or_else(|| {
-                        err!("Error: Cannot find parent of path.");
-                    })
-                    .to_owned()
-            } else {
-                absolute_path
-            }
-        }
-        None => current_dir()?,
+    let config = ConfigBuilder::from_path(cli.manifest_dir_path.unwrap_or(".".into()))
+        .cache(false)
+        .build()
+        .unwrap();
+
+    let package_list = if !cli.omit_license_text {
+        package_list_with_licenses(config).unwrap()
+    } else {
+        package_list(&config.metadata_config).unwrap()
     };
 
-    assert!(manifest_dir.is_dir());
-
-    let cargo_toml_path = read_dir(manifest_dir.clone())?
-        .into_iter()
-        .filter_map(|entry| entry.ok())
-        .filter(|entry| entry.file_type().map_or(false, |ft| ft.is_file()))
-        .filter(|entry| entry.file_name().to_string_lossy() == "Cargo.toml")
-        .next()
-        .unwrap_or_else(|| err!("Error: Failed finding Cargo.toml file in dir."))
-        .path();
-
-    let cargo_toml: CargoToml = toml::from_str(&read_to_string(cargo_toml_path)?)?;
-    let name = cargo_toml.package.name;
-
-    let mut package_list = generate_package_list_with_licenses_without_env_calls(
-        None,
-        manifest_dir.as_os_str().to_owned(),
-        name,
-    );
-
-    if cli.omit_license_text {
-        for pkg in package_list.iter_mut() {
-            pkg.license_text = None;
-        }
-    }
-
     if cli.yaml {
-        println!("{}", serde_yml::to_string(&package_list)?)
+        println!("{}", serde_yml::to_string(&package_list).unwrap())
     } else if cli.json {
-        println!("{}", to_string_pretty(&package_list)?)
+        println!("{}", to_string_pretty(&package_list).unwrap())
     } else {
         if cli.short {
-            print_short_license_info(package_list)?;
+            print_short_license_info(package_list);
         } else {
             let stdout = std::io::stdout();
             let lock = stdout.lock();
             let mut stdout_buffered = BufWriter::new(lock);
-            write!(stdout_buffered, "{}", package_list)?;
-            stdout_buffered.flush()?;
+            write!(stdout_buffered, "{}", package_list).unwrap();
+            stdout_buffered.flush().unwrap();
         }
     }
-
-    Ok(())
 }

@@ -22,9 +22,8 @@ strip = false
 
 [dependencies]
 clap = { version = "4.5.27", features = ["derive"] }
-color-eyre = "0.6.3"
 colored = "3.0.0"
-license-fetcher = { version = "0.7.0", features = ["build"] }
+license-fetcher = { version = "0.8.1", features = ["build"] }
 mimalloc = { version = "0.1.46", features = ["secure"], optional = true }
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = "1.0.137"
@@ -33,14 +32,13 @@ tikv-jemallocator = { version = "0.6.0", optional = true }
 toml = "0.8.19"
 
 [build-dependencies]
-license-fetcher = { version = "0.7.2", features = ["build"] }
+license-fetcher = { version = "0.8.1", features = ["build"] }
 
 [features]
 # Other memory allocators for testing.
 # On Windows and Linux GNU they perform worse than the standard allocators.
 # I was not able to test Linux MUSL or Apple performance.
 mimalloc = ["dep:mimalloc"]
-tikv-jemallocator = ["dep:tikv-jemallocator"]
 
 [package.metadata.binstall]
 pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }{ archive-suffix }"
