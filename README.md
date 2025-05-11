@@ -1,6 +1,7 @@
 <div align="center">
 
 # `flicense`
+
 **CLI for printing license information of rust cargo projects to the terminal.**
 
 [![Crates.io Version](https://badgen.net/crates/v/flicense)](https://crates.io/crates/flicense)
@@ -21,6 +22,7 @@ Options:
   -y, --yaml               Output as yaml
   -j, --json               Output as json
   -s, --short              Outputs only a short overview
+      --stats              Outputs stats regarding how many licenses have been found and for what crates
   -o, --omit-license-text  Omits outputting license text
   -l, --license            Outputs license information regarding this software and it's dependencies
   -h, --help               Print help
@@ -48,14 +50,12 @@ cargo binstall -y flicense
 cargo install flicense
 ```
 
-
 ## Usage
 
 ### Prerequisite
 
 1. Have [Cargo](https://github.com/rust-lang/cargo) installed.
 2. Ensure the dependencies of the project for which you want to fetch licenses are downloaded (e.g., using `cargo fetch`).
-
 
 ## Examples:
 
@@ -97,6 +97,7 @@ flicense.exe .\license-fetcher\ -o -y`
 ```
 
 ### Short License Overview
+
 ```
 flicense.exe .\license-fetcher\ -s
 MIT OR Zlib OR Apache-2.0: miniz_oxide
@@ -105,4 +106,20 @@ MIT: bincode, bincode_derive, virtue
 BSL-1.0: license-fetcher
 ```
 
+### Stats
 
+Stats can be very useful to identify packages, where license-fetcher failed to find any packages.
+
+```
+flicense.exe .\license-fetcher\ --stats
+name                          license found
+license-fetcher               ✓
+adler2                        ✓
+bincode                       ✓
+bincode_derive                ✓
+miniz_oxide                   ✓
+unty                          ✓
+virtue                        ✓
+
+license found: 100%
+```
