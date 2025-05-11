@@ -5,6 +5,7 @@
 **CLI for printing license information of rust cargo projects to the terminal.**
 
 [![Crates.io Version](https://badgen.net/crates/v/flicense)](https://crates.io/crates/flicense)
+[![lib.rs link](https://badgen.net/badge/lib.rs/lib.rs/purple?label)](https://lib.rs/crates/flicense)
 [![GitHub License](https://badgen.net/github/license/WyvernIXTL/flicense-rs)](https://github.com/WyvernIXTL/flicense-rs/blob/main/LICENSE)
 [![dependency status](https://deps.rs/repo/github/WyvernIXTL/flicense-rs/status.svg)](https://deps.rs/repo/github/WyvernIXTL/flicense-rs)
 

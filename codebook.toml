@@ -1,4 +1,6 @@
 words = [
+    "badgen",
+    "flicense",
     "mimalloc",
     "txz",
 ]
