@@ -24,7 +24,7 @@ strip = false
 clap = { version = "4.5.27", features = ["derive"] }
 colored = "3.0.0"
 license-fetcher = { version = "0.8.1", features = ["build"] }
-mimalloc = { version = "0.1.46", features = ["secure"], optional = true }
+
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = "1.0.137"
 serde_yml = "0.0.12"
@@ -37,7 +37,7 @@ license-fetcher = { version = "0.8.1", features = ["build"] }
 # Other memory allocators for testing.
 # On Windows and Linux GNU they perform worse than the standard allocators.
 # I was not able to test Linux MUSL or Apple performance.
-mimalloc = ["dep:mimalloc"]
+
 
 [package.metadata.binstall]
 pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }{ archive-suffix }"

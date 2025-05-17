@@ -21,10 +21,6 @@ use license_fetcher::build::{
 use license_fetcher::read_package_list_from_out_dir;
 use license_fetcher::PackageList;
 
-#[cfg(feature = "mimalloc")]
-#[global_allocator]
-static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
-
 fn err<T>(msg: T)
 where
     T: AsRef<str>,
