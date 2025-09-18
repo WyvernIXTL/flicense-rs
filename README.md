@@ -20,14 +20,15 @@ Arguments:
   [MANIFEST_DIR_PATH]  Optional path to manifest dir (where Cargo.toml and Cargo.lock are). Defaults to current dir
 
 Options:
-  -y, --yaml               Output as yaml
-  -j, --json               Output as json
-  -s, --short              Outputs only a short overview
-      --stats              Outputs stats regarding how many licenses have been found and for what crates
-  -o, --omit-license-text  Omits outputting license text
-  -l, --license            Outputs license information regarding this software and it's dependencies
-  -h, --help               Print help
-  -V, --version            Print version
+  -y, --yaml                Output as yaml
+  -j, --json                Output as json
+  -s, --short               Outputs only a short overview
+      --stats               Outputs stats regarding how many licenses have been found and for what crates
+  -o, --omit-license-text   Omits outputting license text
+  -e, --encode <FILE PATH>  Write the package list encoded via bincode and compressed via miniz_oxide to the given file
+  -l, --license             Outputs license information regarding this software and it's dependencies
+  -h, --help                Print help
+  -V, --version             Print version
 ```
 
 ## Installation
@@ -65,65 +66,75 @@ cargo install flicense
 
 ### Without Any Flag
 
-```
-flicense.exe ..\license-fetcher\`
-================================================================================
-
-Package:     license-fetcher 0.6.2
-Description: Fetch licenses of dependencies at build time and embed them into your program.
-Authors:     - Adam McKellar <dev@mckellar.eu>
-Repository:  https://github.com/WyvernIXTL/license-fetcher
-SPDX Ident:  BSL-1.0
-
---------------------------------------------------------------------------------
-Copyright Adam McKellar 2024
-
-Boost Software License - Version 1.0 - August 17th, 2003
-
-...
+```sh
+flicense ./
+flicense # no argument implies the current directory
+# ================================================================================
+#
+# Package:     license-fetcher 0.6.2
+# Description: Fetch licenses of dependencies at build time and embed them into your program.
+# Authors:     - Adam McKellar <dev@mckellar.eu>
+# Repository:  https://github.com/WyvernIXTL/license-fetcher
+# SPDX Ident:  BSL-1.0
+#
+# --------------------------------------------------------------------------------
+# Copyright Adam McKellar 2024
+#
+# Boost Software License - Version 1.0 - August 17th, 2003
+#
+# ...
 ```
 
 ### YAML Without License Text
 
-```
-flicense.exe .\license-fetcher\ -o -y`
-- name: license-fetcher
-  version: '0.6.2'
-  authors:
-  - Adam McKellar <dev@mckellar.eu>
-  description: Fetch licenses of dependencies at build time and embed them into your program.
-  homepage: null
-  repository: https://github.com/WyvernIXTL/license-fetcher
-  license_identifier: BSL-1.0
-  license_text: null
-
-...
+```sh
+flicense  ./license-fetcher/ -o -y
+# - name: license-fetcher
+#   version: '0.6.2'
+#   authors:
+#   - Adam McKellar <dev@mckellar.eu>
+#   description: Fetch licenses of dependencies at build time and embed them into your program.
+#   homepage: null
+#   repository: https://github.com/WyvernIXTL/license-fetcher
+#   license_identifier: BSL-1.0
+#   license_text: null
+#
+# ...
 ```
 
 ### Short License Overview
 
-```
-flicense.exe .\license-fetcher\ -s
-MIT OR Zlib OR Apache-2.0: miniz_oxide
-MIT: bincode, bincode_derive, virtue
-0BSD OR MIT OR Apache-2.0: adler2
-BSL-1.0: license-fetcher
+```sh
+flicense ./license-fetcher/ -s
+# MIT OR Zlib OR Apache-2.0: miniz_oxide
+# MIT: bincode, bincode_derive, virtue
+# 0BSD OR MIT OR Apache-2.0: adler2
+# BSL-1.0: license-fetcher
 ```
 
 ### Stats
 
 Stats can be very useful to identify packages, where license-fetcher failed to find any packages.
 
+```sh
+flicense ./license-fetcher/ --stats
+# name                          license found
+# license-fetcher               ✓
+# adler2                        ✓
+# bincode                       ✓
+# bincode_derive                ✓
+# miniz_oxide                   ✓
+# unty                          ✓
+# virtue                        ✓
+#
+# license found: 100%
 ```
-flicense.exe .\license-fetcher\ --stats
-name                          license found
-license-fetcher               ✓
-adler2                        ✓
-bincode                       ✓
-bincode_derive                ✓
-miniz_oxide                   ✓
-unty                          ✓
-virtue                        ✓
 
-license found: 100%
+### Encode Licenses for Embedding During Build
+
+The license information necessary for the use of [license-fetcher](https://github.com/WyvernIXTL/license-fetcher)
+can be fetched manually, instead of during the build script. This might be necessary if reproducible builds are required.
+
+```sh
+flicense --encode ./target/3rd-party-licenses.bincode.deflate
 ```
