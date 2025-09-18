@@ -1,8 +1,10 @@
 words = [
     "badgen",
+    "bincode",
     "bsl",
     "flicense",
     "mckellar",
     "mimalloc",
+    "miniz",
     "txz",
 ]

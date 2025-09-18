@@ -4,6 +4,7 @@
 //          https://www.boost.org/LICENSE_1_0.txt)
 
 use std::collections::HashMap;
+use std::fs::write;
 use std::io::prelude::*;
 use std::io::BufWriter;
 use std::path::PathBuf;
@@ -104,6 +105,27 @@ fn print_license_stats(package_list: PackageList) {
     stdout_buffered.flush().unwrap();
 }
 
+fn write_encoded_and_compressed_file(path: PathBuf, package_list: PackageList) {
+    if let Some(parent_folder) = path.parent() {
+        if !parent_folder.exists() {
+            err!(
+                "ERROR: Folder does not exist '{:?}'",
+                &parent_folder.display()
+            );
+        }
+    }
+
+    let encode_result = package_list.encode();
+
+    match encode_result {
+        Ok(data) => write(path, data).expect("Failed to write to file"),
+        Err(e) => {
+            err("ERROR: Failed to encode package list");
+            err!("{}", e);
+        }
+    }
+}
+
 /// CLI for printing license information of rust cargo projects to the terminal.
 ///
 /// Cargo needs to be installed and be in the PATH.
@@ -133,6 +155,10 @@ struct Cli {
     /// Omits outputting license text.
     #[arg(short, long, conflicts_with = "no-license-text")]
     omit_license_text: bool,
+
+    /// Write the package list encoded via bincode and compressed via miniz_oxide to the given file.
+    #[arg(short, long, value_name = "FILE PATH", group = "mode")]
+    encode: Option<PathBuf>,
 
     /// Outputs license information regarding this software and it's dependencies.
     #[arg(short, long, group = "mode", group = "other")]
@@ -177,6 +203,8 @@ fn main() {
             print_short_license_info(package_list);
         } else if cli.stats {
             print_license_stats(package_list);
+        } else if let Some(path) = cli.encode {
+            write_encoded_and_compressed_file(path, package_list);
         } else {
             let stdout = std::io::stdout();
             let lock = stdout.lock();
