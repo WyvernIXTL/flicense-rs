@@ -111,30 +111,31 @@ fn print_license_stats(package_list: PackageList) {
 #[command(version, about, long_about = None)]
 struct Cli {
     /// Optional path to manifest dir (where Cargo.toml and Cargo.lock are). Defaults to current dir.
+    #[arg(conflicts_with = "other")]
     manifest_dir_path: Option<PathBuf>,
 
     /// Output as yaml.
-    #[arg(short, long)]
+    #[arg(short, long, group = "mode")]
     yaml: bool,
 
     /// Output as json.
-    #[arg(short, long)]
+    #[arg(short, long, group = "mode")]
     json: bool,
 
     /// Outputs only a short overview.
-    #[arg(short, long)]
+    #[arg(short, long, group = "mode", group = "no-license-text")]
     short: bool,
 
     /// Outputs stats regarding how many licenses have been found and for what crates.
-    #[arg(long)]
+    #[arg(long, group = "mode", group = "no-license-text")]
     stats: bool,
 
     /// Omits outputting license text.
-    #[arg(short, long)]
+    #[arg(short, long, conflicts_with = "no-license-text")]
     omit_license_text: bool,
 
     /// Outputs license information regarding this software and it's dependencies.
-    #[arg(short, long)]
+    #[arg(short, long, group = "mode", group = "other")]
     license: bool,
 }
 
