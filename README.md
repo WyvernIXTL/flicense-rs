@@ -40,11 +40,21 @@ scoop bucket add stupid-bucket https://github.com/WyvernIXTL/stupid-bucket
 scoop install stupid-bucket/flicense
 ```
 
+### [Homebrew](https://brew.sh/)
+
+```sh
+brew install wyvernixtl/tap2/flicense
+```
+
 ### [Cargo Binstall](https://github.com/cargo-bins/cargo-binstall) (Windows/Linux/MacOS)
 
 ```sh
 cargo binstall -y flicense
 ```
+
+### Binary Releases
+
+Checkout the [release page](https://github.com/WyvernIXTL/flicense-rs/releases).
 
 ### From Source
 

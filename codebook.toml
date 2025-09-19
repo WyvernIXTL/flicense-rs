@@ -4,8 +4,10 @@ words = [
     "binstall",
     "bsl",
     "flicense",
+    "homebrew",
     "mckellar",
     "mimalloc",
     "miniz",
     "txz",
+    "wyvernixtl",
 ]
