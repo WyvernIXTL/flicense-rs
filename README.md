@@ -40,7 +40,7 @@ scoop bucket add stupid-bucket https://github.com/WyvernIXTL/stupid-bucket
 scoop install stupid-bucket/flicense
 ```
 
-### [Homebrew](https://brew.sh/)
+### [Homebrew](https://brew.sh/) (Linux/MacOS)
 
 ```sh
 brew install wyvernixtl/tap2/flicense
