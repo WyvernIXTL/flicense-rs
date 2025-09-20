@@ -5,12 +5,17 @@
 
 use std::collections::HashMap;
 use std::fs::write;
+use std::io;
 use std::io::prelude::*;
 use std::io::BufWriter;
 use std::path::PathBuf;
 use std::process::exit;
 
+use clap::CommandFactory;
 use clap::Parser;
+use clap::ValueEnum;
+use clap::ValueHint;
+use clap_complete::{generate, Shell};
 use colored::ColoredString;
 use colored::Colorize;
 use license_fetcher::error::UnpackError;
@@ -133,7 +138,7 @@ fn write_encoded_and_compressed_file(path: PathBuf, package_list: PackageList) {
 #[command(version, about, long_about = None)]
 struct Cli {
     /// Optional path to manifest dir (where Cargo.toml and Cargo.lock are). Defaults to current dir.
-    #[arg(conflicts_with = "other")]
+    #[arg(conflicts_with = "other", value_hint = ValueHint::DirPath)]
     manifest_dir_path: Option<PathBuf>,
 
     /// Output as yaml.
@@ -157,8 +162,16 @@ struct Cli {
     omit_license_text: bool,
 
     /// Write the package list encoded via bincode and compressed via miniz_oxide to the given file.
-    #[arg(short, long, value_name = "FILE PATH", group = "mode")]
+    #[arg(short, long, value_name = "FILE PATH", group = "mode", value_hint = ValueHint::FilePath)]
     encode: Option<PathBuf>,
+
+    /// Print shell completions for a shell.
+    #[arg(long, value_enum, group = "mode")]
+    generate_shell_completion: Option<Shell>,
+
+    /// List supported shells for shell completion generation.
+    #[arg(long, group = "mode")]
+    list_supported_shells_for_shell_completion: bool,
 
     /// Outputs license information regarding this software and it's dependencies.
     #[arg(short, long, group = "mode", group = "other")]
@@ -180,6 +193,21 @@ fn main() {
             },
         };
         println!("{}", packages);
+        return;
+    }
+
+    if cli.list_supported_shells_for_shell_completion {
+        for shell in Shell::value_variants() {
+            println!("{shell}");
+        }
+        return;
+    }
+
+    if let Some(shell) = cli.generate_shell_completion {
+        let mut cmd = Cli::command();
+        let bin_name = cmd.get_name().to_string();
+        eprintln!("Generating completion file for {shell:?}...");
+        generate(shell, &mut cmd, bin_name, &mut io::stdout());
         return;
     }
 
