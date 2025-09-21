@@ -42,6 +42,9 @@ scoop install stupid-bucket/flicense
 
 ### [Homebrew](https://brew.sh/) (Linux/MacOS)
 
+> [!TIP]
+> Shell completions are included! See the [Homebrew Documentation](https://docs.brew.sh/Shell-Completion) on how to activate them.
+
 ```sh
 brew install wyvernixtl/tap2/flicense
 ```
@@ -54,7 +57,7 @@ cargo binstall -y flicense
 
 ### Binary Releases
 
-Checkout the [release page](https://github.com/WyvernIXTL/flicense-rs/releases).
+[![Download for Windows](https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)![Download for macOS](https://img.shields.io/badge/Download-macOS-000000?style=for-the-badge&logo=apple&logoColor=white)![Download for Linux](https://img.shields.io/badge/Download-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/WyvernIXTL/flicense-rs/releases/latest)
 
 ### From Source
 

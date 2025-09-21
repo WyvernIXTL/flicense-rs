@@ -19,6 +19,7 @@
         "serde",
         "softprops",
         "Swatinem",
-        "tikv"
+        "tikv",
+        "wyvernixtl"
     ]
 }
