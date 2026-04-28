@@ -145,6 +145,9 @@ flicense ./license-fetcher/ --stats
 
 ### Encode Licenses for Embedding During Build
 
+> [!WARNING]
+> This is an experimental feature. You must be sure, that the versions of `license-fetcher` and `flicense` are compatible. `license-fetcher=0.8.4` is compatible with `flicense=0.4.0` and `license-fetcher=0.9.1` is compatible with `flicense=0.5.0`.
+
 The license information necessary for the use of [license-fetcher](https://github.com/WyvernIXTL/license-fetcher)
 can be fetched manually, instead of during the build script. This might be necessary if reproducible builds are required.
 

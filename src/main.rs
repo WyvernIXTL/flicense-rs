@@ -122,13 +122,7 @@ fn write_encoded_and_compressed_file(path: PathBuf, package_list: PackageList) {
 
     let encode_result = package_list.encode();
 
-    match encode_result {
-        Ok(data) => write(path, data).expect("Failed to write to file"),
-        Err(e) => {
-            err("ERROR: Failed to encode package list");
-            err!("{}", e);
-        }
-    }
+    write(path, encode_result).expect("Failed to write to file")
 }
 
 /// CLI for printing license information of rust cargo projects to the terminal.
@@ -161,8 +155,8 @@ struct Cli {
     #[arg(short, long, conflicts_with = "no-license-text")]
     omit_license_text: bool,
 
-    /// Write the package list encoded via bincode and compressed via miniz_oxide to the given file.
-    #[arg(short, long, value_name = "FILE PATH", group = "mode", value_hint = ValueHint::FilePath)]
+    /// Write the package list encoded via nanoserde and compressed via lz4 to the given file.
+    #[arg(short, long, value_name = "FILE PATH", group = "mode", value_hint = ValueHint::FilePath, hide = true)]
     encode: Option<PathBuf>,
 
     /// Print shell completions for a shell.
