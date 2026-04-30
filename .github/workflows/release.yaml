@@ -39,7 +39,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install Target
         run: rustup target add ${{ matrix.target }}
       - name: Build Cache
@@ -57,7 +57,7 @@ jobs:
         if: runner.os != 'Windows'
         run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/optimized-release/flicense ./README.md
       - name: Upload Binary
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             flicense*.txz
@@ -84,7 +84,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install Cargo Binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Install Cross
@@ -96,7 +96,7 @@ jobs:
       - name: Tar Binary
         run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/optimized-release/flicense ./README.md
       - name: Upload Binary
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             flicense*.txz
