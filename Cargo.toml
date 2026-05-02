@@ -54,3 +54,6 @@ pkg-fmt = "zip"
 
 [package.metadata.binstall.overrides.i686-pc-windows-msvc]
 pkg-fmt = "zip"
+
+[badges.maintenance]
+status = "passively-maintained"
