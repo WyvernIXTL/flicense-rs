@@ -6,8 +6,8 @@
 use std::collections::HashMap;
 use std::fs::write;
 use std::io;
-use std::io::prelude::*;
 use std::io::BufWriter;
+use std::io::prelude::*;
 use std::path::PathBuf;
 use std::process::exit;
 
@@ -15,7 +15,7 @@ use clap::CommandFactory;
 use clap::Parser;
 use clap::ValueEnum;
 use clap::ValueHint;
-use clap_complete::{generate, Shell};
+use clap_complete::{Shell, generate};
 use colored::ColoredString;
 use colored::Colorize;
 use license_fetcher::error::UnpackError;
@@ -44,14 +44,10 @@ fn print_short_license_info(package_list: PackageList) {
     let mut license_map: HashMap<String, Vec<String>> = HashMap::new();
     for pck in package_list.iter() {
         if let Some(license) = pck.license_identifier.clone() {
-            if !license_map.contains_key(&license) {
-                license_map.insert(license, vec![pck.name.clone()]);
-            } else {
-                license_map
-                    .get_mut(&license)
-                    .unwrap()
-                    .push(pck.name.clone());
-            }
+            license_map
+                .entry(license)
+                .and_modify(|e| e.push(pck.name.clone()))
+                .or_insert_with(|| vec![pck.name.clone()]);
         }
     }
     let stdout = std::io::stdout();
@@ -62,17 +58,13 @@ fn print_short_license_info(package_list: PackageList) {
         for pck in packages.iter().take(packages.len() - 1) {
             write!(stdout_buffered, "{}, ", pck).unwrap();
         }
-        write!(stdout_buffered, "{}\n", packages.last().unwrap()).unwrap();
+        writeln!(stdout_buffered, "{}", packages.last().unwrap()).unwrap();
     }
     stdout_buffered.flush().unwrap();
 }
 
 fn check(val: bool) -> ColoredString {
-    if val {
-        "✓".green()
-    } else {
-        "✗".red()
-    }
+    if val { "✓".green() } else { "✗".red() }
 }
 
 fn print_license_stats(package_list: PackageList) {
@@ -107,13 +99,13 @@ fn print_license_stats(package_list: PackageList) {
 }
 
 fn write_encoded_and_compressed_file(path: PathBuf, package_list: PackageList) {
-    if let Some(parent_folder) = path.parent() {
-        if !parent_folder.exists() {
-            err!(
-                "ERROR: Folder does not exist '{:?}'",
-                &parent_folder.display()
-            );
-        }
+    if let Some(parent_folder) = path.parent()
+        && !parent_folder.exists()
+    {
+        err!(
+            "ERROR: Folder does not exist '{:?}'",
+            &parent_folder.display()
+        );
     }
 
     let encode_result = package_list.encode();
