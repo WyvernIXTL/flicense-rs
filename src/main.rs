@@ -21,11 +21,7 @@ use colored::Colorize;
 use license_fetcher::error::UnpackError;
 use serde_json::to_string_pretty;
 
-use license_fetcher::build::{
-    config::ConfigBuilder, metadata::package_list, package_list_with_licenses,
-};
-use license_fetcher::read_package_list_from_out_dir;
-use license_fetcher::PackageList;
+use license_fetcher::prelude::*;
 
 fn err<T>(msg: T)
 where
@@ -91,10 +87,10 @@ fn print_license_stats(package_list: PackageList) {
             stdout_buffered,
             "{:<30}{:<30}",
             p.name.blue(),
-            check(p.license_text.is_some())
+            check(!p.license_texts.is_empty())
         )
         .unwrap();
-        if p.license_text.is_some() {
+        if !p.license_texts.is_empty() {
             count += 1;
         }
     }
@@ -206,7 +202,6 @@ fn main() {
     }
 
     let config = ConfigBuilder::from_path(cli.manifest_dir_path.unwrap_or(".".into()))
-        .cache(false)
         .build()
         .unwrap();
 
