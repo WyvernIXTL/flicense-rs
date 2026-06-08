@@ -6,6 +6,13 @@ permissions:
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Compile only, skip upload'
+        required: true
+        default: false
+        type: boolean
 
 env:
   LICENSE_FETCHER: FORCE
@@ -57,6 +64,7 @@ jobs:
         if: runner.os != 'Windows'
         run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/optimized-release/flicense ./README.md
       - name: Upload Binary
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.dry-run }}
         uses: softprops/action-gh-release@v3
         with:
           files: |
@@ -96,6 +104,7 @@ jobs:
       - name: Tar Binary
         run: tar -cJf flicense-${{ github.ref_name }}-${{ matrix.target }}.txz ./target/${{ matrix.target }}/optimized-release/flicense ./README.md
       - name: Upload Binary
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.dry-run }}
         uses: softprops/action-gh-release@v3
         with:
           files: |
