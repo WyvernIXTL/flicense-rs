@@ -202,9 +202,9 @@ checksum = "68ab91017fe16c622486840e4c83c9a37afeff978bd239b5293d61ece587de66"
 
 [[package]]
 name = "license-fetcher"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b78d298fb9844476f0577ba024d61e19dc25245593dd927c9e6455e1cab6264"
+checksum = "edcf5222bba59fab57995c9a21bca714fed6a99dc553c9b1dade42de4ff988ca"
 dependencies = [
  "exn",
  "log",
